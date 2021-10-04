@@ -1,16 +1,17 @@
 from pyspark import SparkConf
 from pyspark.ml import Pipeline
-from pyspark.ml.feature import OneHotEncoderEstimator, StringIndexer, QuantileDiscretizer, MinMaxScaler
+from pyspark.ml.feature import  StringIndexer, QuantileDiscretizer, MinMaxScaler
 from pyspark.ml.linalg import VectorUDT, Vectors
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import *
 from pyspark.sql.types import *
 from pyspark.sql import functions as F
+from pyspark.ml.feature import OneHotEncoder  # spark vesion（3.0.0） OneHotEncoderEstimator change  be import the OneHotEncoder
 
 
 def oneHotEncoderExample(movieSamples):
     samplesWithIdNumber = movieSamples.withColumn("movieIdNumber", F.col("movieId").cast(IntegerType()))
-    encoder = OneHotEncoderEstimator(inputCols=["movieIdNumber"], outputCols=['movieIdVector'], dropLast=False)
+    encoder = OneHotEncoder(inputCols=["movieIdNumber"], outputCols=['movieIdVector'], dropLast=False)
     oneHotEncoderSamples = encoder.fit(samplesWithIdNumber).transform(samplesWithIdNumber)
     oneHotEncoderSamples.printSchema()
     oneHotEncoderSamples.show(10)
